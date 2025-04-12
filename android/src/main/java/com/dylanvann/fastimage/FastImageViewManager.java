@@ -21,7 +21,6 @@ import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
 
 import java.util.List;
@@ -37,9 +36,6 @@ class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> imple
     static final String REACT_ON_PROGRESS_EVENT = "onFastImageProgress";
     private static final Map<String, List<FastImageViewWithUrl>> VIEWS_FOR_URLS = new WeakHashMap<>();
 
-    @Nullable
-    private RequestManager requestManager = null;
-
     @NonNull
     @Override
     public String getName() {
@@ -49,11 +45,12 @@ class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> imple
     @NonNull
     @Override
     protected FastImageViewWithUrl createViewInstance(@NonNull ThemedReactContext reactContext) {
+        RequestManager requestManager = null;
         if (isValidContextForGlide(reactContext)) {
             requestManager = Glide.with(reactContext);
         }
 
-        return new FastImageViewWithUrl(reactContext);
+        return new FastImageViewWithUrl(reactContext, requestManager);
     }
 
     @ReactProp(name = "source")
@@ -86,7 +83,7 @@ class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> imple
     @Override
     public void onDropViewInstance(@NonNull FastImageViewWithUrl view) {
         // This will cancel existing requests.
-        view.clearView(requestManager);
+        view.clearView();
 
         if (view.glideUrl != null) {
             final String key = view.glideUrl.toString();
@@ -114,18 +111,7 @@ class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> imple
 
     @Override
     public void onProgress(String key, long bytesRead, long expectedLength) {
-        List<FastImageViewWithUrl> viewsForKey = VIEWS_FOR_URLS.get(key);
-        if (viewsForKey != null) {
-            for (FastImageViewWithUrl view : viewsForKey) {
-                WritableMap event = new WritableNativeMap();
-                event.putInt("loaded", (int) bytesRead);
-                event.putInt("total", (int) expectedLength);
-                ThemedReactContext context = (ThemedReactContext) view.getContext();
-                RCTEventEmitter eventEmitter = context.getJSModule(RCTEventEmitter.class);
-                int viewId = view.getId();
-                eventEmitter.receiveEvent(viewId, REACT_ON_PROGRESS_EVENT, event);
-            }
-        }
+        
     }
 
     @Override
@@ -178,6 +164,6 @@ class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> imple
     @Override
     protected void onAfterUpdateTransaction(@NonNull FastImageViewWithUrl view) {
         super.onAfterUpdateTransaction(view);
-        view.onAfterUpdate(this, requestManager, VIEWS_FOR_URLS);
+        view.onAfterUpdate(this, VIEWS_FOR_URLS);
     }
 }

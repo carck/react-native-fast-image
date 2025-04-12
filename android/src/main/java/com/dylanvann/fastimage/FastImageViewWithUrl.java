@@ -13,11 +13,11 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,9 +32,11 @@ class FastImageViewWithUrl extends AppCompatImageView {
     private Drawable mDefaultSource = null;
 
     public GlideUrl glideUrl;
+    private RequestManager requestManager;
 
-    public FastImageViewWithUrl(Context context) {
+    public FastImageViewWithUrl(Context context, RequestManager requestManager) {
         super(context);
+        this.requestManager = requestManager;
     }
 
     public void setSource(@Nullable ReadableMap source) {
@@ -54,7 +56,6 @@ class FastImageViewWithUrl extends AppCompatImageView {
     @SuppressLint("CheckResult")
     public void onAfterUpdate(
             @Nonnull FastImageViewManager manager,
-            @Nullable RequestManager requestManager,
             @Nonnull Map<String, List<FastImageViewWithUrl>> viewsForUrlsMap) {
         if (!mNeedsReload)
             return;
@@ -65,7 +66,7 @@ class FastImageViewWithUrl extends AppCompatImageView {
                 mDefaultSource == null) {
 
             // Cancel existing requests.
-            clearView(requestManager);
+            clearView();
 
             if (glideUrl != null) {
                 FastImageOkHttpProgressGlideModule.forget(glideUrl.toStringUrl());
@@ -81,14 +82,9 @@ class FastImageViewWithUrl extends AppCompatImageView {
 
         if (imageSource != null && imageSource.getUri().toString().length() == 0) {
             ThemedReactContext context = (ThemedReactContext) getContext();
-            RCTEventEmitter eventEmitter = context.getJSModule(RCTEventEmitter.class);
-            int viewId = getId();
-            WritableMap event = new WritableNativeMap();
-            event.putString("message", "Invalid source prop:" + mSource);
-            eventEmitter.receiveEvent(viewId, REACT_ON_ERROR_EVENT, event);
 
             // Cancel existing requests.
-            clearView(requestManager);
+            clearView();
 
             if (glideUrl != null) {
                 FastImageOkHttpProgressGlideModule.forget(glideUrl.toStringUrl());
@@ -103,7 +99,7 @@ class FastImageViewWithUrl extends AppCompatImageView {
 
         // Cancel existing request.
         this.glideUrl = glideUrl;
-        clearView(requestManager);
+        clearView();
 
         String key = glideUrl == null ? null : glideUrl.toStringUrl();
 
@@ -119,15 +115,6 @@ class FastImageViewWithUrl extends AppCompatImageView {
         }
 
         ThemedReactContext context = (ThemedReactContext) getContext();
-        if (imageSource != null) {
-            // This is an orphan even without a load/loadend when only loading a placeholder
-            RCTEventEmitter eventEmitter = context.getJSModule(RCTEventEmitter.class);
-            int viewId = this.getId();
-
-            eventEmitter.receiveEvent(viewId,
-                    FastImageViewManager.REACT_ON_LOAD_START_EVENT,
-                    new WritableNativeMap());
-        }
 
         if (requestManager != null) {
             RequestBuilder<Drawable> builder =
@@ -151,8 +138,8 @@ class FastImageViewWithUrl extends AppCompatImageView {
         }
     }
 
-    public void clearView(@Nullable RequestManager requestManager) {
-        if (requestManager != null && getTag() != null && getTag() instanceof Request) {
+    public void clearView() {
+        if (requestManager != null) {
             requestManager.clear(this);
         }
     }
