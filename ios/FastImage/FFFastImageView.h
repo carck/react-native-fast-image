@@ -20,5 +20,7 @@
 @property (nonatomic, strong) UIImage *defaultSource;
 @property (nonatomic, strong) UIColor *imageColor;
 
+- (void)didSetProps:(NSArray<NSString *> *)changedProps;
+
 @end
 

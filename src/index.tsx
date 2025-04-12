@@ -259,19 +259,9 @@ const styles = StyleSheet.create({
     },
 })
 
-// Types of requireNativeComponent are not correct.
-const FastImageView = (requireNativeComponent as any)(
-    'FastImageView',
-    FastImage,
-    {
-        nativeOnly: {
-            onFastImageLoadStart: true,
-            onFastImageProgress: true,
-            onFastImageLoad: true,
-            onFastImageError: true,
-            onFastImageLoadEnd: true,
-        },
-    },
-)
+const isFabricEnabled = (global as any)?.nativeFabricUIManager != null;
+const FastImageView = isFabricEnabled
+    ? require('./FastImageViewNativeComponent').default
+    : requireNativeComponent('FastImageView');
 
 export default FastImage

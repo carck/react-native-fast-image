@@ -21,6 +21,9 @@ import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.facebook.react.uimanager.ViewManagerDelegate;
+import com.facebook.react.viewmanagers.FastImageViewManagerDelegate;
+import com.facebook.react.viewmanagers.FastImageViewManagerInterface;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
 
 import java.util.List;
@@ -29,17 +32,29 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
 
-class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> implements FastImageProgressListener {
+class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> implements FastImageProgressListener, FastImageViewManagerInterface<FastImageViewWithUrl> {
 
     static final String REACT_CLASS = "FastImageView";
     static final String REACT_ON_LOAD_START_EVENT = "onFastImageLoadStart";
     static final String REACT_ON_PROGRESS_EVENT = "onFastImageProgress";
     private static final Map<String, List<FastImageViewWithUrl>> VIEWS_FOR_URLS = new WeakHashMap<>();
 
+    private final ViewManagerDelegate<FastImageViewWithUrl> mDelegate;
+
+    public FastImageViewManager() {
+        mDelegate = new FastImageViewManagerDelegate<>(this);
+    }
+
     @NonNull
     @Override
     public String getName() {
         return REACT_CLASS;
+    }
+
+    @Nullable
+    @Override
+    protected ViewManagerDelegate<FastImageViewWithUrl> getDelegate() {
+        return mDelegate;
     }
 
     @NonNull

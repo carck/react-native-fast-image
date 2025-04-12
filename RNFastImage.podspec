@@ -18,4 +18,10 @@ Pod::Spec.new do |s|
   s.dependency 'React-Core'
   s.dependency 'SDWebImage', '~> 5.18'
   s.dependency 'SDWebImageWebPCoder', '~> 0.14'
+
+  # Conditional Fabric-specific configuration
+  if ENV['RCT_NEW_ARCH_ENABLED'] == '1'
+    s.source_files    = 'ios/**/*.{h,m,mm,cpp}'
+    install_modules_dependencies(s)
+  end
 end

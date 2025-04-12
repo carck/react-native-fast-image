@@ -17,6 +17,7 @@
 		FD751C45229EB44C002BE1F4 /* FFFastImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB253A1EA5562700F59778 /* FFFastImageView.m */; };
 		FD751C46229EB44C002BE1F4 /* FFFastImageSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB25381EA5562700F59778 /* FFFastImageSource.m */; };
 		FD751C48229EB44C002BE1F4 /* libSDWebImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCC6D0D01EB38D2F0065F944 /* libSDWebImage.a */; };
+		FD751C50229EB44C002BE1F4 /* FFFastImageViewComponentView.mm in Sources */ = {isa = PBXBuildFile; fileRef = FD751C4F229EB44C002BE1F4 /* FFFastImageViewComponentView.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,8 @@
 		FCFB253D1EA5562700F59778 /* RCTConvert+FFFastImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+FFFastImage.h"; sourceTree = "<group>"; };
 		FCFB253E1EA5562700F59778 /* RCTConvert+FFFastImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+FFFastImage.m"; sourceTree = "<group>"; };
 		FD751C4D229EB44C002BE1F4 /* libFastImage-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libFastImage-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD751C4E229EB44C002BE1F3 /* FFFastImageViewComponentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFFastImageViewComponentView.h; sourceTree = "<group>"; };
+		FD751C4F229EB44C002BE1F4 /* FFFastImageViewComponentView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFFastImageViewComponentView.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +152,8 @@
 				FCFB253C1EA5562700F59778 /* FFFastImageViewManager.m */,
 				FCFB253D1EA5562700F59778 /* RCTConvert+FFFastImage.h */,
 				FCFB253E1EA5562700F59778 /* RCTConvert+FFFastImage.m */,
+				FD751C4E229EB44C002BE1F3 /* FFFastImageViewComponentView.h */,
+				FD751C4F229EB44C002BE1F4 /* FFFastImageViewComponentView.mm */,
 			);
 			path = FastImage;
 			sourceTree = "<group>";
@@ -265,6 +270,7 @@
 				FCFB25421EA5562700F59778 /* RCTConvert+FFFastImage.m in Sources */,
 				FCFB25401EA5562700F59778 /* FFFastImageView.m in Sources */,
 				FCFB253F1EA5562700F59778 /* FFFastImageSource.m in Sources */,
+				FD751C50229EB44C002BE1F4 /* FFFastImageViewComponentView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
