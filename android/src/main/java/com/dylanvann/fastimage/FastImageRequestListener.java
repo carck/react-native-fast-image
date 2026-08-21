@@ -10,6 +10,8 @@ import com.bumptech.glide.request.target.Target;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.UIManagerHelper;
+import com.facebook.react.uimanager.events.EventDispatcher;
 
 public class FastImageRequestListener implements RequestListener<Drawable> {
     static final String REACT_ON_ERROR_EVENT = "onFastImageError";
@@ -41,6 +43,14 @@ public class FastImageRequestListener implements RequestListener<Drawable> {
     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
         if (!(target instanceof ImageViewTarget)) {
             return false;
+        }
+        FastImageViewWithUrl view = (FastImageViewWithUrl) ((ImageViewTarget) target).getView();
+        ThemedReactContext context = (ThemedReactContext) view.getContext();
+        EventDispatcher dispatcher = UIManagerHelper.getEventDispatcherForReactTag(context, view.getId());
+        int surfaceId = UIManagerHelper.getSurfaceId(view);
+
+        if (dispatcher != null) {
+            dispatcher.dispatchEvent(new FastImageLoadEvent(surfaceId, view.getId(), resource.getIntrinsicWidth(), resource.getIntrinsicHeight()));
         }
         return false;
     }
